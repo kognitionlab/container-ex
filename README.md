@@ -1,10 +1,14 @@
 # Container-Execution Test Manager
+<div style="display: flex; align-items: center; gap: 2rem;">
+  <div style="flex: 1;">
+    A Flask web application for managing and testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
+  </div>
+  <div style="flex-shrink: 0;">
+    <img src="./static/assets/container-ex-logo-white-bg.png" alt="Container-Execution Logo" style="max-height: 120px;" height="120"/>
+  </div>
+</div>
 
-<p align="center">
-  <img src="./app/static/assets/container-ex-logo-white-bg.png" alt="Container-Execution Logo" style="max-height: 120px;" height="120"/>
-</p>
 
-A Flask web application for managing and testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
 
 ---
 
@@ -28,6 +32,17 @@ A Flask web application for managing and testing Docker/Podman containers. This 
 - [Contributing](#contributing)
 
 ---
+## Screenshots
+
+### Main Interface
+<p align="center">
+  <img src="./static/assets/execution-home.png" alt="Container-Execution Home Interface" style="max-width: 100%;" />
+</p>
+
+### Execution History
+<p align="center">
+  <img src="./static/assets/execution-history.png" alt="Container-Execution History Interface" style="max-width: 100%;" />
+</p>
 
 ## Features
 - Run Docker or Podman containers with custom commands

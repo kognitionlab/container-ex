@@ -2,11 +2,15 @@
 
 {% block content %}
 <div class="main-container">
+    
     <div class="header">
-        <img src="{{ url_for('static', filename='assets/container-ex-logo-white-bg.png') }}" alt="Container Ex Logo" class="header-logo">
-        <h1><i class="fas fa-container"></i> Container Execution Test Manager</h1>
-        <p>Execute containers and run test commands with real-time monitoring</p>
+        <img src="{{ url_for('static', filename='assets/container-ex-logo-without-text.png') }}" alt="Container Ex Logo" class="header-logo">
+        <div class="header-text">
+            <h1><i class="fas fa-container"></i> Container Execution Test Manager</h1>
+            <p>Execute containers and run test commands with real-time monitoring</p>
+        </div>
     </div>
+
 
     <ul class="nav nav-tabs" id="mainTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -115,6 +119,8 @@
                 </div>
             </div>
         </div>
+
+        
     </div>
 </div>
 {% endblock %}
