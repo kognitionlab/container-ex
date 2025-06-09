@@ -267,14 +267,14 @@ function renderExecutions() {
 
             ${execution.test_output ? `
                 <div class="mb-2">
-                    <strong>Test Output:</strong>
+                    <strongOutput:</strong>
                     <div class="output-container mt-1">${execution.test_output}</div>
                 </div>
             ` : ''}
 
             ${execution.error_message ? `
                 <div class="mb-2">
-                    <strong>Error Message:</strong>
+                    <strong>Message:</strong>
                     <div class="output-container mt-1">${execution.error_message}</div>
                 </div>
             ` : ''}
@@ -285,7 +285,7 @@ function renderExecutions() {
                 </div>
                 <div class="col-md-4">
                     <small><strong>Ended:</strong> ${formatDateTime(execution.end_time)}</small>
-                </div>fContainer Name:
+                </div>
                 <div class="col-md-4">
                     <small><strong>Exit Code:</strong> ${execution.exit_code ?? 'N/A'}</small>
                 </div>
