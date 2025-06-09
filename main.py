@@ -131,11 +131,13 @@ def run_container_test(manager: ContainerManager, execution_id: str):
         # If no name provided, generate one
         if not container_name:
             container_name = f"test-container-{execution_id[:8]}"
-            docker_args.insert(-1,['--name', container_name])
+            # Insert --name and container_name before the image name (last argument)
+            docker_args.insert(-1, '--name')
+            docker_args.insert(-1, container_name)
 
         # Add detach flag if not present
         if '-d' not in docker_args and '--detach' not in docker_args:
-            docker_args.append('-d')
+            docker_args.insert(-1, '-d')
 
         # Run the container
         logger.info(f"Starting container with command: {' '.join(docker_args)}")
@@ -310,10 +312,4 @@ def stop_container(container_id):
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    # Create templates directory and files
-    os.makedirs('templates', exist_ok=True)
-    os.makedirs('static/css', exist_ok=True)
-    os.makedirs('static/js', exist_ok=True)
-
-    # Run the Flask app
-    app.run(host='0.0.0.0', port=9595, debug=True)
+    app.run(host='0.0.0.0', port=9595, debug=False)
