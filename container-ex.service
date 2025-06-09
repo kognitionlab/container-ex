@@ -1,0 +1,34 @@
+[Unit]
+Description=Container Test Manager Service
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+Group=YOUR_GROUP
+WorkingDirectory=/path/to/container-ex
+Environment="PATH=/path/to/container-ex/venv/bin"
+Environment="FLASK_ENV=production"
+Environment="FLASK_DEBUG=0"
+Environment="SECRET_KEY=your-secure-secret-key-here"
+Environment="BACKEND=docker"  # or "podman"
+
+# Create a virtual environment and install dependencies
+ExecStartPre=/usr/bin/python3 -m venv venv
+ExecStartPre=/path/to/container-ex/venv/bin/pip install -r requirements.txt
+
+# Start the application
+ExecStart=/path/to/container-ex/venv/bin/python run.py --backend ${BACKEND}
+
+# Restart on failure
+Restart=on-failure
+RestartSec=5
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target 

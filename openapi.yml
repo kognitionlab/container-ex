@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: Container Test Manager API
+  description: |
+    API for managing and testing Docker/Podman containers. This API provides endpoints
+    to run containers, execute test commands, and monitor their status.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+components:
+  schemas:
+    ExecutionRequest:
+      type: object
+      required:
+        - docker_command
+        - test_command
+      properties:
+        docker_command:
+          type: string
+          description: Docker/Podman run command
+          example: "docker run -d --name test-container nginx"
+        test_command:
+          type: string
+          description: Command to execute inside the container
+          example: "curl localhost"
+        backend:
+          type: string
+          enum: [docker, podman]
+          description: Container backend to use
+          default: docker
+          example: "docker"
+
+    ExecutionResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique execution ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        docker_command:
+          type: string
+          description: Original docker command
+          example: "docker run -d --name test-container nginx"
+        test_command:
+          type: string
+          description: Test command that was executed
+          example: "curl localhost"
+        status:
+          type: string
+          enum: [pending, starting, running, testing, completed, failed, stopped]
+          description: Current execution status
+          example: "completed"
+        container_id:
+          type: string
+          description: ID of the running container
+          example: "abc123def456"
+        container_name:
+          type: string
+          description: Name of the container
+          example: "test-container"
+        start_time:
+          type: string
+          format: date-time
+          description: When the execution started
+          example: "2024-03-20T10:00:00Z"
+        end_time:
+          type: string
+          format: date-time
+          description: When the execution ended
+          example: "2024-03-20T10:01:00Z"
+        test_output:
+          type: string
+          description: Output from the test command
+          example: "<!DOCTYPE html><html>..."
+        error_message:
+          type: string
+          description: Error message if execution failed
+          example: "Container failed to start"
+        exit_code:
+          type: integer
+          description: Exit code from the test command
+          example: 0
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Execution not found"
+
+paths:
+  /api/execute:
+    post:
+      summary: Execute a container and test command
+      description: Creates a new container and runs a test command inside it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecutionRequest'
+      responses:
+        '200':
+          description: Execution started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  execution_id:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/status/{execution_id}:
+    get:
+      summary: Get execution status
+      description: Retrieve the current status and details of an execution
+      parameters:
+        - name: execution_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the execution to check
+      responses:
+        '200':
+          description: Execution status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionResult'
+        '404':
+          description: Execution not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/executions:
+    get:
+      summary: Get all executions
+      description: Retrieve a list of all executions
+      responses:
+        '200':
+          description: List of executions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExecutionResult'
+
+  /api/executions/{execution_id}:
+    delete:
+      summary: Delete an execution
+      description: Remove an execution record
+      parameters:
+        - name: execution_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the execution to delete
+      responses:
+        '204':
+          description: Execution deleted successfully
+        '404':
+          description: Execution not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/containers/{container_id}/stop:
+    post:
+      summary: Stop a running container
+      description: Stop a container by its ID
+      parameters:
+        - name: container_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the container to stop
+      responses:
+        '200':
+          description: Container stopped successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Container stopped successfully"
+        '500':
+          description: Failed to stop container
+          content:
+            application/json:
+              schema:
+ 
