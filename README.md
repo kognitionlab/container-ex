@@ -200,7 +200,4 @@ run.py                  # Application entry point
 4. Add new templates in `app/templates/`
 
 ## License
-[Your License Here]
-
-## Contributing
-[Your Contributing Guidelines Here] 
+Apache 2.0
