@@ -51,7 +51,7 @@ class ContainerManager:
     def __init__(self):
         self.executions: Dict[str, ExecutionResult] = {}
         self.lock = threading.Lock()
-    
+
     def create_execution(self, docker_command: str, test_command: str) -> str:
         """Create a new execution record"""
         execution_id = str(uuid.uuid4())
@@ -62,12 +62,12 @@ class ContainerManager:
             status=ContainerStatus.PENDING,
             start_time=datetime.now()
         )
-        
+
         with self.lock:
             self.executions[execution_id] = execution
-        
+
         return execution_id
-    
+
     def update_execution(self, execution_id: str, **kwargs):
         """Update execution record"""
         with self.lock:
@@ -76,17 +76,17 @@ class ContainerManager:
                 for key, value in kwargs.items():
                     if hasattr(execution, key):
                         setattr(execution, key, value)
-    
+
     def get_execution(self, execution_id: str) -> Optional[ExecutionResult]:
         """Get execution by ID"""
         with self.lock:
             return self.executions.get(execution_id)
-    
+
     def get_all_executions(self) -> List[ExecutionResult]:
         """Get all executions"""
         with self.lock:
             return list(self.executions.values())
-    
+
     def delete_execution(self, execution_id: str) -> bool:
         """Delete execution record"""
         with self.lock:
@@ -94,7 +94,7 @@ class ContainerManager:
                 del self.executions[execution_id]
                 return True
         return False
-    
+
     def get_container_status(self, container_id: str) -> str:
         """Get container status from docker"""
         try:
@@ -113,34 +113,34 @@ def run_container_test(manager: ContainerManager, execution_id: str):
     execution = manager.get_execution(execution_id)
     if not execution:
         return
-    
+
     try:
         # Update status to starting
         manager.update_execution(execution_id, status=ContainerStatus.STARTING)
-        
+
         # Parse docker command to extract container name if provided
         docker_args = execution.docker_command.split()
         container_name = None
-        
+
         # Look for --name flag
         if '--name' in docker_args:
             name_index = docker_args.index('--name')
             if name_index + 1 < len(docker_args):
                 container_name = docker_args[name_index + 1]
-        
+
         # If no name provided, generate one
         if not container_name:
             container_name = f"test-container-{execution_id[:8]}"
-            docker_args.extend(['--name', container_name])
-        
+            docker_args.insert(-1,['--name', container_name])
+
         # Add detach flag if not present
         if '-d' not in docker_args and '--detach' not in docker_args:
             docker_args.append('-d')
-        
+
         # Run the container
         logger.info(f"Starting container with command: {' '.join(docker_args)}")
         result = subprocess.run(docker_args, capture_output=True, text=True, timeout=60)
-        
+
         if result.returncode != 0:
             manager.update_execution(
                 execution_id,
@@ -149,7 +149,7 @@ def run_container_test(manager: ContainerManager, execution_id: str):
                 end_time=datetime.now()
             )
             return
-        
+
         container_id = result.stdout.strip()
         manager.update_execution(
             execution_id,
@@ -157,10 +157,10 @@ def run_container_test(manager: ContainerManager, execution_id: str):
             container_name=container_name,
             status=ContainerStatus.RUNNING
         )
-        
+
         # Wait for container to be ready
         time.sleep(2)
-        
+
         # Check if container is still running
         container_status = manager.get_container_status(container_id)
         if container_status not in ['running', 'up']:
@@ -176,15 +176,15 @@ def run_container_test(manager: ContainerManager, execution_id: str):
                 end_time=datetime.now()
             )
             return
-        
+
         # Run test command inside container
         manager.update_execution(execution_id, status=ContainerStatus.TESTING)
-        
+
         test_result = subprocess.run(
             ['docker', 'exec', container_id] + execution.test_command.split(),
             capture_output=True, text=True, timeout=300
         )
-        
+
         # Update execution with results
         manager.update_execution(
             execution_id,
@@ -194,7 +194,7 @@ def run_container_test(manager: ContainerManager, execution_id: str):
             exit_code=test_result.returncode,
             end_time=datetime.now()
         )
-        
+
     except subprocess.TimeoutExpired:
         manager.update_execution(
             execution_id,
@@ -225,17 +225,17 @@ def execute_container():
     data = request.get_json()
     docker_command = data.get('docker_command', '').strip()
     test_command = data.get('test_command', '').strip()
-    
+
     if not docker_command or not test_command:
         return jsonify({'error': 'Both docker command and test command are required'}), 400
-    
+
     # Validate docker command starts with 'docker run'
     if not docker_command.startswith('docker run'):
         return jsonify({'error': 'Command must start with "docker run"'}), 400
-    
+
     # Create execution record
     execution_id = container_manager.create_execution(docker_command, test_command)
-    
+
     # Start background thread for execution
     thread = threading.Thread(
         target=run_container_test,
@@ -243,7 +243,7 @@ def execute_container():
     )
     thread.daemon = True
     thread.start()
-    
+
     return jsonify({'execution_id': execution_id})
 
 def serialize_execution(execution: ExecutionResult) -> dict:
@@ -264,7 +264,7 @@ def get_status(execution_id):
     execution = container_manager.get_execution(execution_id)
     if not execution:
         return jsonify({'error': 'Execution not found'}), 404
-    
+
     return jsonify(serialize_execution(execution))
 
 @app.route('/history')
@@ -284,7 +284,7 @@ def delete_execution(execution_id):
     execution = container_manager.get_execution(execution_id)
     if not execution:
         return jsonify({'error': 'Execution not found'}), 404
-    
+
     # Stop and remove container if it exists
     if execution.container_id:
         try:
@@ -292,7 +292,7 @@ def delete_execution(execution_id):
             subprocess.run(['docker', 'rm', execution.container_id], timeout=30)
         except Exception as e:
             logger.error(f"Error cleaning up container: {e}")
-    
+
     # Delete execution record
     container_manager.delete_execution(execution_id)
     return jsonify({'success': True})
@@ -314,6 +314,6 @@ if __name__ == '__main__':
     os.makedirs('templates', exist_ok=True)
     os.makedirs('static/css', exist_ok=True)
     os.makedirs('static/js', exist_ok=True)
-    
+
     # Run the Flask app
     app.run(host='0.0.0.0', port=9595, debug=True)
