@@ -1,5 +1,7 @@
 # Container Test Manager
 
+![](./app/static/assets/container-ex-logo-white-bg.png)
+
 A Flask web application for managing and testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
 
 ## Features
