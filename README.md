@@ -1,14 +1,13 @@
-# Container-Execution Test Manager
+# Container Executions Manager
 <div style="display: flex; align-items: center; gap: 2rem;">
   <div style="flex: 1;">
-    A Flask web application for managing and testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
+    An application for testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
+    it also stores a history of all executed container run commands and a few metrics regarding each run i.e. how long did the container run, what was the output of the command executed within container etc.
   </div>
   <div style="flex-shrink: 0;">
     <img src="./static/assets/container-ex-logo-white-bg.png" alt="Container-Execution Logo" style="max-height: 120px;" height="120"/>
   </div>
 </div>
-
-
 
 ---
 
@@ -19,7 +18,7 @@
 - [Usage](#usage)
   - [Running as a Development Server](#running-as-a-development-server)
   - [Running as a Systemd Service](#running-as-a-systemd-service)
-- [Configuration](#configuration)
+- [Container Tool Selection](#container-tool-slection)
 - [Docker Setup](#docker-setup)
   - [Security Considerations](#security-considerations)
   - [Alternative: Using Podman](#alternative-using-podman)
@@ -60,7 +59,7 @@
 ## Installation
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/kognitionlab/container-ex
    cd container-ex
    ```
 2. **Create and activate a virtual environment:**
@@ -84,53 +83,44 @@
    ```bash
    python run.py --backend podman
    ```
-   The application will be available at [http://localhost:5000](http://localhost:5000)
 
 ### Running as a Systemd Service
 1. **Edit the service file:**
    ```bash
-   cp container-test-manager.service /tmp/container-test-manager.service
-   nano /tmp/container-test-manager.service
+   cp container-ex.service /tmp/container-ex.service
+   nano /tmp/container-ex.service
    ```
    Update the following variables in the service file:
    - `User`: Your system username
    - `Group`: Your system group
    - `WorkingDirectory`: Full path to the application directory
-   - `Environment="PATH"`: Full path to the virtual environment's bin directory
-   - `Environment="SECRET_KEY"`: A secure random string for Flask
-   - `Environment="BACKEND"`: Choose between "docker" or "podman"
+     
 2. **Install the service:**
    ```bash
-   sudo mv /tmp/container-test-manager.service /etc/systemd/system/
+   sudo mv /tmp/container-ex.service /etc/systemd/system/
    sudo systemctl daemon-reload
-   sudo systemctl enable container-test-manager
-   sudo systemctl start container-test-manager
+   sudo systemctl enable container-ex
+   sudo systemctl start container-ex.service
    ```
 3. **Verify the service:**
    ```bash
-   sudo systemctl status container-test-manager
-   sudo journalctl -u container-test-manager -f
+   sudo systemctl status container-ex.service
+   sudo journalctl -u container-ex.service -f
    ```
 4. **Service management commands:**
    ```bash
-   sudo systemctl stop container-test-manager
-   sudo systemctl restart container-test-manager
-   sudo systemctl disable container-test-manager
+   sudo systemctl stop container-ex.service
+   sudo systemctl restart container-ex.service
+   sudo systemctl disable container-ex.service
    ```
 5. **Troubleshooting:**
    ```bash
-   sudo systemctl is-active container-test-manager
-   sudo journalctl -u container-test-manager -n 50 --no-pager
-   sudo systemctl cat container-test-manager
+   sudo systemctl is-active container-ex.service
+   sudo journalctl -u container-ex.service -n 50 --no-pager
+   sudo systemctl cat container-ex.service
    ```
 
-## Configuration
-### Environment Variables
-- `SECRET_KEY`: Flask secret key for session management (default: 'your-secret-key-change-this')
-- `FLASK_ENV`: Flask environment (development/production)
-- `FLASK_DEBUG`: Enable/disable debug mode
-
-### Backend Selection
+### Container Tool Selection
 The application supports two container backends:
 - Docker (default)
 - Podman
@@ -142,14 +132,14 @@ To run the application using Docker, you'll need to mount the Docker socket to a
 
 ```bash
 # Build the image
-docker build -t container-test-manager .
+docker build -t container-ex .
 
 # Run the container with Docker socket mounted
 docker run -d \
-  --name container-test-manager \
+  --name container-ex \
   -p 5000:5000 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  container-test-manager
+  container-ex
 ```
 
 ### Security Considerations
@@ -190,6 +180,7 @@ podman run -d \
 - `/history`: History page showing all executions
 
 ## Development
+
 ### Project Structure
 ```text
 app/
