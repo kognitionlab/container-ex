@@ -9,14 +9,13 @@
 ## Screenshots
 
 ### Main Interface
-<p align="center">
-  <img src="./static/assets/execution-home.png" alt="Container-Execution Home Interface" style="max-width: 100%;" />
-</p>
+![image](https://github.com/user-attachments/assets/80e03c37-5d19-41e1-ba7e-84f95acc77a0)
+
+### Running Execution
+![image](https://github.com/user-attachments/assets/c3b4fdf9-aa06-438b-86f3-349ca3858738)
 
 ### Execution History
-<p align="center">
-  <img src="./static/assets/execution-history.png" alt="Container-Execution History Interface" style="max-width: 100%;" />
-</p>
+![image](https://github.com/user-attachments/assets/920ba272-ee1e-42c3-8107-e9c7f9511de3)
 
 ---
 
