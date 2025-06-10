@@ -1,5 +1,5 @@
-# Container Executions Manager
-<img src="https://github.com/user-attachments/assets/a48bf38f-a54c-4836-a408-41177e1b79a2" style="float: center;" />
+# <img src="https://github.com/user-attachments/assets/a48bf38f-a54c-4836-a408-41177e1b79a2" style="width: 80px; height: 80px; object-fit: contain;" /> Container Executions Manager
+
   <p style="margin: 0; font-size: 1rem;">
     <span style="float: left; font-size: 2.5rem; line-height: 1; padding-right: 0.3rem;">A</span>n application for testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
     It also stores a history of all executed container run commands and a few metrics regarding each run, i.e., how long the container ran, what was the output of the command executed within the container, etc.
