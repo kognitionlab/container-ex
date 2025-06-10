@@ -1,13 +1,29 @@
 # Container Executions Manager
 <div style="display: flex; align-items: center; gap: 2rem;">
+  <!-- Text on the left -->
   <div style="flex: 1;">
     An application for testing Docker/Podman containers. This application provides a web interface to run containers and execute test commands within them.
-    it also stores a history of all executed container run commands and a few metrics regarding each run i.e. how long did the container run, what was the output of the command executed within container etc.
+    It also stores a history of all executed container run commands and a few metrics regarding each run, i.e., how long the container ran, what was the output of the command executed within the container, etc.
   </div>
+
+  <!-- Image on the right -->
   <div style="flex-shrink: 0;">
-    <img src="./static/assets/container-ex-logo-white-bg.png" alt="Container-Execution Logo" style="max-height: 120px;" height="120"/>
+    <img src="./static/assets/container-ex-logo-white-bg.png" alt="Container-Execution Logo" style="max-height: 120px; height: auto;" />
   </div>
 </div>
+
+---
+## Screenshots
+
+### Main Interface
+<p align="center">
+  <img src="./static/assets/execution-home.png" alt="Container-Execution Home Interface" style="max-width: 100%;" />
+</p>
+
+### Execution History
+<p align="center">
+  <img src="./static/assets/execution-history.png" alt="Container-Execution History Interface" style="max-width: 100%;" />
+</p>
 
 ---
 
@@ -28,20 +44,6 @@
   - [Project Structure](#project-structure)
   - [Adding New Features](#adding-new-features)
 - [License](#license)
-- [Contributing](#contributing)
-
----
-## Screenshots
-
-### Main Interface
-<p align="center">
-  <img src="./static/assets/execution-home.png" alt="Container-Execution Home Interface" style="max-width: 100%;" />
-</p>
-
-### Execution History
-<p align="center">
-  <img src="./static/assets/execution-history.png" alt="Container-Execution History Interface" style="max-width: 100%;" />
-</p>
 
 ## Features
 - Run Docker or Podman containers with custom commands
